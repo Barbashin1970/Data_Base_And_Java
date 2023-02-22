@@ -1,6 +1,5 @@
 package database.dao.dao;
 
-import database.dao.dao.CustomerDao;
 import database.dao.entities.Customer;
 
 import java.util.List;
