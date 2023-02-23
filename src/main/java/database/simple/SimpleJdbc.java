@@ -9,14 +9,14 @@ public class SimpleJdbc {
     static String userName = "postgres";
     static String password = "postgres";
 
-    public static void select() {
+    public static void select() {  // печать отформатированного списка покупателей
         try (Connection connection = DriverManager.getConnection(url, userName, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM customer");
-            ResultSetMetaData rsmd = resultSet.getMetaData();
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             while (resultSet.next()) {
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    String columnName = rsmd.getColumnName(i);
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    String columnName = resultSetMetaData.getColumnName(i);
                     String columnValue = resultSet.getString(i);
                     System.out.print(columnName + ": " + columnValue + "\n");
                 }
@@ -26,14 +26,15 @@ public class SimpleJdbc {
         }
     }
 
-    public static List<Customer> selectCustomers() {
+    public static List<Customer> selectCustomers() { //просто возвращает список покупателей
         List<Customer> customerList = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(url, userName, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM customer");
             while (resultSet.next()) {
-                customerList.add(new Customer(resultSet.getInt(1)
+                customerList.add(new Customer(
+                          resultSet.getInt(1)
                         , resultSet.getString(2)
                         , resultSet.getString(3)
                         , resultSet.getString(4)));
@@ -41,7 +42,6 @@ public class SimpleJdbc {
             return customerList;
         } catch (SQLException e) {
             e.printStackTrace();
-            new AssertionError("Something went wrong");
         }
         return customerList;
     }
@@ -58,5 +58,6 @@ public class SimpleJdbc {
             e.printStackTrace();
         }
         select();
+        System.out.println("Список покупателей без форматирования:  " + selectCustomers());
     }
 }
